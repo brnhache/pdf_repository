@@ -9,13 +9,24 @@
 
 ## Lendesk Coding Challenge
 
-Hello! Thanks for the opportunity to show you what I can do with Laravel in the context of an API.
+Hello! Thanks for the opportunity to show you some of what I can do with Laravel in the context of an API.
 
 This project is my submission for the Coding Challenge as a part of my application to the Junior Laravel Developer at Lendesk.
 
+## Thought Process
+
 I know that Laravel has some very powerful automated tools that can help me whip this project up fast, so I'll be following the documentation and setting up a Docker project with Sail.
 
-MySql
+I only need two tables, one for users and another for documents. I've named the former in a more general way in case we want to support more than just PDFs in the future for this theoretical exercise.
+
+Two migrations to seed each table with some data.
+
+user_a@email.com password: thisisapassword
+user_b@email.com password: thisisalsoapassword
+
+Each user has a single document linked to them from the seeding.
+
+I am currently creating a clunky authentication that validates the user credentials on every request. I realize that this is not production value and I need to learn how to implement middleware properly for this situation. I am reading documentation about it and will attempt to make things work properly after everything else is working.
 
 ## About the Author
 

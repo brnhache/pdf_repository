@@ -1,7 +1,11 @@
 <?php
 
+use App\Models\User;
+use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +19,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    return Auth::user();
 });
+
+Route::middleware('auth:sanctum')->get('/login{}', function (Request $request) {
+    return Auth::user();
+});
+
+Route::get('/documents', [DocumentController::class, 'index']);
+Route::post('/documents', [DocumentController::class, 'store']);
