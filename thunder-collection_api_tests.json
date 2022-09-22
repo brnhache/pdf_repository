@@ -1,0 +1,150 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "api_tests",
+    "dateExported": "2022-09-22T02:54:02.610Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "dd00c224-2a48-4b86-9c53-8d4cee09fe94",
+            "colId": "f7831ea2-8ea0-4862-9d86-ca1babdb992c",
+            "containerId": "",
+            "name": "delete document",
+            "url": "localhost/api/documents/10",
+            "method": "DELETE",
+            "sortNum": 10000,
+            "created": "2022-09-22T02:52:54.787Z",
+            "modified": "2022-09-22T02:52:54.787Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "2|mm5VLQOcCvndQCHiJMjbglTv8Ho4x5OpTig6najj"
+            },
+            "tests": []
+        },
+        {
+            "_id": "2443c5d5-36ba-4607-8038-79ebc33bc88c",
+            "colId": "f7831ea2-8ea0-4862-9d86-ca1babdb992c",
+            "containerId": "",
+            "name": "get specific document",
+            "url": "localhost/api/documents/1",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2022-09-22T02:53:11.585Z",
+            "modified": "2022-09-22T02:53:11.585Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "12|ZuRcjV9x5HFr0eUxkLq5G8eFZzSWIXXhhWnLdBne"
+            },
+            "tests": []
+        },
+        {
+            "_id": "6d5d945d-492a-442f-b008-470da7131c3c",
+            "colId": "f7831ea2-8ea0-4862-9d86-ca1babdb992c",
+            "containerId": "",
+            "name": "create user",
+            "url": "localhost/api/auth/createUser",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2022-09-22T02:53:18.552Z",
+            "modified": "2022-09-22T02:53:18.552Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Brianw\",\n  \"email\": \"brian21@email.com\",\n  \"password\": \"thisisapassword\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "616642a6-6515-4310-96b7-86bddb404352",
+            "colId": "f7831ea2-8ea0-4862-9d86-ca1babdb992c",
+            "containerId": "",
+            "name": "generate token",
+            "url": "localhost/api/auth/getToken",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2022-09-22T02:53:24.372Z",
+            "modified": "2022-09-22T02:53:24.372Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"user_a@email.com\",\n  \"password\": \"thisisapassword\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "79c273d1-3079-492a-9fb5-06ad7b74dff0",
+            "colId": "f7831ea2-8ea0-4862-9d86-ca1babdb992c",
+            "containerId": "",
+            "name": "get all documents",
+            "url": "localhost/api/documents",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2022-09-22T02:53:33.536Z",
+            "modified": "2022-09-22T02:53:33.536Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "2|mm5VLQOcCvndQCHiJMjbglTv8Ho4x5OpTig6najj"
+            },
+            "tests": []
+        },
+        {
+            "_id": "a843e323-bf99-414b-ac47-1afb8818eb5f",
+            "colId": "f7831ea2-8ea0-4862-9d86-ca1babdb992c",
+            "containerId": "",
+            "name": "post document",
+            "url": "localhost/api/documents",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2022-09-22T02:53:41.539Z",
+            "modified": "2022-09-22T02:53:41.539Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "multipart/form-data"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "name",
+                        "value": "my special doccc"
+                    },
+                    {
+                        "name": "email",
+                        "value": "user_a@email.com",
+                        "isDisabled": true
+                    },
+                    {
+                        "name": "password",
+                        "value": "thisisapassword",
+                        "isDisabled": true
+                    }
+                ],
+                "files": [
+                    {
+                        "name": "file",
+                        "value": "\\\\wsl.localhost\\Ubuntu\\home\\ubuntu\\BHache_FanshaweTranscript.pdf"
+                    }
+                ]
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "5|H1TZhKONHHHyull2vyNyOe6gli9GqdtcNbulUoKE"
+            },
+            "tests": []
+        }
+    ]
+}

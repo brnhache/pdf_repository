@@ -12,6 +12,42 @@ I have included some notes on my thought process and roadblocks I encountered to
 
 ## Project Setup
 
+0. Create an alias in ~/.bashrc (optional):
+   alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+
+If you do this just replace "./vendor/bin/sail" with just "sail" in the following steps.
+
+1. Have Docker installed and be within an instance of WSL2 (Developed on Ubuntu 20.04)
+2. git clone https://github.com/brnhache/pdf_repository.git
+3. Within pdf_repository run:
+   npm install
+
+4. create a .env file with the following DB credentials (copy the rest from .env.example)
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=lendesk_challenge
+DB_USERNAME=sail
+DB_PASSWORD=password
+
+5. Create a Docker container by running:
+
+docker run --rm \-u "$(id -u):$(id -g)" \-v $(pwd):/opt \-w /opt \composer install --ignore-platform-reqs
+
+6. Start the server by running:
+
+vendor/bin/sail up
+
+7. run vendor/bin/sail artisan migrate to create tables and seed with some data. (see Though Process section for user credentials).
+
+**note** if you run into SQLSTATE[HY000] [1045] Access denied for user, you probably tried to run "./vendor/bin/sail up" without a .env file. To fix,
+run "./vendor/bin/sail down --rmi all -v" to remove the faulty image and then run "./vendor/bin/sail up" again.
+
+8. Run the limited tests to ensure basic functionality is working:
+
+vendor/bin/sail test
+
 ## API Documentation
 
 ### Create User
@@ -179,7 +215,9 @@ Testing is incomplete. Since the tests are using a temporary database, I need to
 
 I am eager to learn the right way to test API features in Laravel, unfortunately I have run out of time for now and will be submitting what I have. If this were a work project, I would be able to ask team members for advice and opinions to help work through the problem.
 
--> To run the existing tests, enter the command "sail test" in the root of the project.
+-> To run the existing tests, enter the command "vendor/bin/sail test" in the root of the project.
+
+-> I have also included an export of my Thunder Client requests in thunder-collection_api_tests.json at the root of the project in an attempt to ease the setup process.
 
 ## Todo
 
