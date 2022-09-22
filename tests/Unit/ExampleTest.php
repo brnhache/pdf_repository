@@ -16,3 +16,12 @@ class ExampleTest extends TestCase
         $this->assertTrue(true);
     }
 }
+
+
+/**
+
+email exists
+{
+  "error": "This email already exists in the system."
+}
+ */

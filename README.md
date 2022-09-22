@@ -1,17 +1,143 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+### Author: Brian Hache
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Date: 2022-09-21
 
-## Lendesk Coding Challenge
+# Lendesk Coding Challenge
 
 Hello! Thanks for the opportunity to show you some of what I can do with Laravel in the context of an API.
 
 This project is my submission for the Coding Challenge as a part of my application to the Junior Laravel Developer at Lendesk.
+
+I have included some notes on my thought process and roadblocks I encountered towards the bottom of this document.
+
+## Project Setup
+
+## API Documentation
+
+### Create User
+
+Route: /api/auth/createUser
+
+Method: Post
+
+Example Body:
+{
+"name": "Brian",
+"email": "brian@email.com",
+"password": "thisisapassword"
+}
+
+Example Response:
+{
+"status": true,
+"message": "User Created Successfully",
+"token": "6|HHznJ23VfA1ehyQHTJj7ia1mkGjok02sLvufQYrO"
+}
+
+Description:
+Creating a user will insert a row into the users table and return a token for resource access.
+
+## Generate Token
+
+Route: /api/auth/getToken
+
+Method: Post
+
+Example Body:
+{
+"email": "user_a@email.com",
+"password": "thisisapassword"
+}
+
+Example Response:
+{
+"token": "5|H1TZhKONHHHyull2vyNyOe6gli9GqdtcNbulUoKE"
+}
+
+Description:
+Providing existing user credentials will yeild a new token. These tokens do not currently expire. A token should be added to the Auth header of a resource request to allow access. There is currently only one type of token that allows full access to the user's resources.
+
+## Post Document
+
+Route: /api/documents
+
+Method: Post
+
+Content-Type: "multipart/form-data"
+
+Required Form Fields:
+Name:String
+File:PDF
+
+Description: Requires token. Currently only supports .pdf files. Upload a file to the form data of your client and include a name to distinguish the record,
+as the file name in storage is hashed.
+
+## Get All Documents
+
+Route: /api/documents
+
+Method: Get
+
+Example Response:
+[
+{
+"id": 10,
+"user_id": 2,
+"name": "my special doccc",
+"path": "pdfs/xeGtPO8CvdBwlA7FSycbAcWCMBIxb752DuofssO5.pdf",
+"created_at": "2022-09-22T00:26:34.000000Z",
+"updated_at": "2022-09-22T00:26:34.000000Z"
+},
+{
+"id": 3,
+"user_id": 2,
+"name": "BHache_Diploma.pdf",
+"path": "pdfs/BHache_Diploma.pdf",
+"created_at": "2022-09-22T00:10:16.000000Z",
+"updated_at": "2022-09-22T00:10:16.000000Z"
+},
+{
+"id": 4,
+"user_id": 2,
+"name": "lorem_2.pdf",
+"path": "pdfs/lorem_2.pdf",
+"created_at": "2022-09-22T00:10:16.000000Z",
+"updated_at": "2022-09-22T00:10:16.000000Z"
+}
+]
+
+Description: Requires token. Returns a list of all the documents linked to the authenticated user.
+
+## Get Specific Document
+
+Route: /api/documents/{id}
+
+Method: Get
+
+Example Response:
+{
+"id": 10,
+"user_id": 2,
+"name": "my special doccc",
+"path": "pdfs/xeGtPO8CvdBwlA7FSycbAcWCMBIxb752DuofssO5.pdf",
+"created_at": "2022-09-22T00:26:34.000000Z",
+"updated_at": "2022-09-22T00:26:34.000000Z"
+}
+
+Description: Requires token. Returns a specific record by ID.
+
+## Delete Document
+
+Route: /api/documents/{id}
+
+Method: Delete
+
+Example Response:
+{
+"message": "document deleted."
+}
+
+Description: Requires token. Destroys a record belonging to the authenticated user.
 
 ## Thought Process
 
@@ -24,64 +150,49 @@ Two migrations to seed each table with some data.
 user_a@email.com password: thisisapassword
 user_b@email.com password: thisisalsoapassword
 
-Each user has a single document linked to them from the seeding.
+Each user has two documents linked to them from the seeding.
+
+When looking for a specific document to show or destroy, it is tempting to throw a 403 if they ask for a record with an ID that does not belong to them.
+This gives too much information, so I throw a 404 no matter what, unless they provide a valid id.
+I would also prefer to create a user-facing random ID for each record for the same reason.
+
+In the event that a request is sent to create a new user with an email that already exists, I am returning a 409 and informing the client that the email already exists. This seems like I'm giving too much away after considering IDs above, but I'm not sure how else to handle the situation. Emails must be unique, and every other service I've used behaves this way. That makes me think it's not a big deal. I would be interested to hear the readers opinion.
+
+## Authentication
 
 I am currently creating a clunky authentication that validates the user credentials on every request. I realize that this is not production value and I need to learn how to implement middleware properly for this situation. I am reading documentation about it and will attempt to make things work properly after everything else is working.
 
-## About the Author
+I am now using the Laravel Sanctum tool to provide token authentication for the API. Request a token (see above) and place it in the authentication header as a bearer type to access resources.
 
-## About Laravel
+## Roadblocks!
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Developing with Sail using Docker inside of WSL2 posed an issue with uploading files from my local system - since the file paths were always from the windows environment point of view, and as I was testing file uploads the API could not find the file I was specifying. Luckily there is a work-around that involves adding a setting in the vscode settings.json file.
 
--   [Simple, fast routing engine](https://laravel.com/docs/routing).
--   [Powerful dependency injection container](https://laravel.com/docs/container).
--   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
--   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
--   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
--   [Robust background job processing](https://laravel.com/docs/queues).
--   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Authentication for a pure API is something I had to do some reading up on. Laravel documentation suggests the Sanctum authorization plugin for token based access, which is ideal for an API like this. The user can request a token by providing credentials to the server, and then use that token within request headers to allow access to the API.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+When writing the tests, I realized that I need a way to generate resources. The documentation says not to include more than one request in each test, so here I go learning again. -> It seems that I can use a factory to generate resources without making a request, however I am not able to get it to work and will have to hack something together...-> I am able to pass the test by making a request to create a user before each resource request, but this goes against the documentation. Added in Todos.
 
-## Learning Laravel
+## Testing
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**More Notes**
+Testing is incomplete. Since the tests are using a temporary database, I need to generate users, tokens and documents on the fly. Factories are the way to accomplish this from the documentation.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+I am eager to learn the right way to test API features in Laravel, unfortunately I have run out of time for now and will be submitting what I have. If this were a work project, I would be able to ask team members for advice and opinions to help work through the problem.
 
-## Laravel Sponsors
+-> To run the existing tests, enter the command "sail test" in the root of the project.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Todo
 
-### Premium Partners
+Tasks that would follow if I were to continue building this project:
 
--   **[Vehikl](https://vehikl.com/)**
--   **[Tighten Co.](https://tighten.co)**
--   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
--   **[64 Robots](https://64robots.com)**
--   **[Cubet Techno Labs](https://cubettech.com)**
--   **[Cyber-Duck](https://cyber-duck.co.uk)**
--   **[Many](https://www.many.co.uk)**
--   **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
--   **[DevSquad](https://devsquad.com)**
--   **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
--   **[OP.GG](https://op.gg)**
--   **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
--   **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-> Search function
+-> Update function
+-> Perhaps a timeout of the API token depending on requirements [edit 'expiration' => null in sanctum.php].
+If so, comprehensive messaging informing the user of stale token.
+-> Attempt to collapse the routes in api.php to a single resource. Not sure if this is desireable. See comment on line 34 of api.php.
+-> Create random user-facing IDs for each record to hide the number of records in the table.
+-> Add some sweet markdown to this README.
+-> Implement remember_token properly to increase security.
+-> Figure out why the factory generated user was not useable in tests, and implement.
+-> Figure out how to generate form data for uploading files in the test functions.
+-> Ask for a team member to proof read this documentation and make changes where necessary.
